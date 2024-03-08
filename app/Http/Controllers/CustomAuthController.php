@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use Hash;
 use Session;
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 
 class CustomAuthController extends Controller
 {
@@ -16,12 +18,12 @@ class CustomAuthController extends Controller
     public function registration(){
         return view('auth.registration');
     }
-    public function registerUser(Request $request){
-        $request->validate([
-            'name'=>'required',
-            'email'=>'required|email|unique:users',
-            'password'=>'required|min:5|max:12'
-        ]);
+    public function registerUser(RegisterRequest $request){
+        // $request->validate([
+        //     'name'=>'required',
+        //     'email'=>'required|email|unique:users',
+        //     'password'=>'required|min:5|max:12'
+        // ]);
         // $user = User::create([
         //     'name'=>$request->name,
         //     'email'=>$request->email,
@@ -40,11 +42,8 @@ class CustomAuthController extends Controller
         }
 
     }
-    public function loginUser(Request $request){
-        $request->validate([
-            'email'=>'required|email',
-            'password'=>'required|min:5|max:12'
-        ]);
+    public function loginUser(LoginRequest $request){
+
         $user = User::where('email','=',$request->email)->first();
         if($user){
             if(Hash::check($request->password,$user->password)){
